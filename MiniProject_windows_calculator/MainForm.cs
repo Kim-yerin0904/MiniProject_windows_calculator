@@ -11,6 +11,15 @@ namespace MiniProject_windows_calculator
 {
     public partial class Calculator : Form
     {
+        //구조체 만들기
+        struct ErrorMessages
+        {
+            public string ZeroDivisionErrorMessage;
+            public string ExceptErrorMessage;
+        }
+
+        ErrorMessages error = new ErrorMessages();
+
         //클래스 인스턴스 생성
         ClearFunction clearFunction = new ClearFunction(); //전역변수 초기화용
         UnaryOperations unaryOperations = new UnaryOperations();
@@ -24,13 +33,14 @@ namespace MiniProject_windows_calculator
         {
             InitializeComponent();
             RHS_Output.Text = "0";
+            error.ZeroDivisionErrorMessage = "0으로 나눌 수 없습니다.";
         }
 
         // %버튼
         private void Modulo_Click(object sender, EventArgs e)
         {
             //현재 값 검사 후 숫자가 있으면 가져와서 % 함수 실행
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string[] result = new string[2];
                 result = unaryOperations.Percent(RHS_Output.Text, LHS_Output.Text);
@@ -45,7 +55,7 @@ namespace MiniProject_windows_calculator
         private void Fraction_Click(object sender, EventArgs e)
         {
             //현재 값 검사 후 숫자가 있으면 가져와서 분수 함수 실행
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string[] result = unaryOperations.Fraction(RHS_Output.Text, LHS_Output.Text);
                 RHS_Output.Text = result[0];
@@ -67,7 +77,7 @@ namespace MiniProject_windows_calculator
         private void SQR_Click(object sender, EventArgs e)
         {
             //현재 값 검사 후 숫자가 있으면 가져와서 제곱 함수 실행
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string[] result = unaryOperations.Square(RHS_Output.Text, LHS_Output.Text);
                 RHS_Output.Text = result[0];
@@ -81,7 +91,7 @@ namespace MiniProject_windows_calculator
         private void SquareRoot_Click(object sender, EventArgs e)
         {
             //현재 값 검사 후 숫자가 있으면 가져와서 제곱근 함수 실행
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string[] result = unaryOperations.Root(RHS_Output.Text, LHS_Output.Text);
                 RHS_Output.Text = result[0];
@@ -94,7 +104,7 @@ namespace MiniProject_windows_calculator
         //소수점 버튼
         private void DecimalPoint_Click(object sender, EventArgs e)
         {
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string result = additionalFunction.DecimalPoint(RHS_Output.Text);
                 RHS_Output.Text = result;
@@ -106,7 +116,7 @@ namespace MiniProject_windows_calculator
         private void PlusMinus_Click(object sender, EventArgs e)
         {
             //현재 값 검사 후 숫자가 있으면 가져와서 음수양수 함수 실행
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 string result = unaryOperations.NegativePositive(RHS_Output.Text);
                 RHS_Output.Text = result;
@@ -115,11 +125,9 @@ namespace MiniProject_windows_calculator
             //값이 없다면 아무 실행 X
         }
 
+        //화살표 함수 (람다식)
         //CE 버튼 (최근항목 삭제)
-        private void CE_Click(object sender, EventArgs e)
-        {
-            RHS_Output.Text = "0";
-        }
+        private void CE_Click(object sender, EventArgs e)=> RHS_Output.Text = "0";
 
         //C 버튼 (전체 삭제)
         private void C_Click(object sender, EventArgs e)
@@ -130,11 +138,7 @@ namespace MiniProject_windows_calculator
         }
 
         // 백스페이스 버튼
-        private void Delete_Click(object sender, EventArgs e)
-        {
-            RHS_Output.Text = RHS_Output.Text.Remove(RHS_Output.Text.Length - 1);
-            if (RHS_Output.Text.Length == 0) RHS_Output.Text = "0";
-        }
+        private void Delete_Click(object sender, EventArgs e) => RHS_Output.Text = clearFunction.BackspaceButton(RHS_Output.Text);
 
         //숫자 0 버튼
         private void Zero_Click(object sender, EventArgs e)
@@ -231,7 +235,7 @@ namespace MiniProject_windows_calculator
         private void Division_Click(object sender, EventArgs e)
         {
             // 피연산자 값(숫자)을 입력하지 않았거나 오류로 값이 사라진 상황에선 연산 실행 생략
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 ElementaryArithmetic elementaryArithmetic = new ElementaryArithmetic();
                 // 수식에 추가할 항(수식 + 피연산자 연산자)
@@ -244,7 +248,7 @@ namespace MiniProject_windows_calculator
         private void Multiplication_Click(object sender, EventArgs e)
         {
             // 피연산자 값(숫자)을 입력하지 않았거나 오류로 값이 사라진 상황에선 연산 실행 생략
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 ElementaryArithmetic elementaryArithmetic = new ElementaryArithmetic();
                 // 수식에 추가할 항(수식 + 피연산자 연산자)
@@ -257,7 +261,7 @@ namespace MiniProject_windows_calculator
         private void Subtraction_Click(object sender, EventArgs e)
         {
             // 피연산자 값(숫자)을 입력하지 않았거나 오류로 값이 사라진 상황에선 연산 실행 생략
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 ElementaryArithmetic elementaryArithmetic = new ElementaryArithmetic();
                 // 수식에 추가할 항(수식 + 피연산자 연산자)
@@ -270,7 +274,7 @@ namespace MiniProject_windows_calculator
         private void Addition_Click(object sender, EventArgs e)
         {
             // 피연산자 값(숫자)을 입력하지 않았거나 오류로 값이 사라진 상황에선 연산 실행 생략
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 ElementaryArithmetic elementaryArithmetic = new ElementaryArithmetic();
                 // 수식에 추가할 항(수식 + 피연산자 연산자)
@@ -283,7 +287,7 @@ namespace MiniProject_windows_calculator
         private void Assignment_Click(object sender, EventArgs e)
         {
             // 피연산자 값(숫자)을 입력하지 않았거나 오류로 값이 사라진 상황에선 연산 실행 생략
-            if (RHS_Output.Text != "" && RHS_Output.Text != "0으로 나눌 수 없습니다.")
+            if (RHS_Output.Text != "" && RHS_Output.Text != error.ZeroDivisionErrorMessage)
             {
                 ElementaryArithmetic elementaryArithmetic = new ElementaryArithmetic();
                 string result = elementaryArithmetic.assignment(LHS_Output.Text, RHS_Output.Text, past_operator);
